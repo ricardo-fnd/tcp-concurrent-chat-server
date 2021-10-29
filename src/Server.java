@@ -26,8 +26,16 @@ public class Server {
         while (true) {
             Socket clientSocket = serverSocket.accept();
 
-            ClientConnection client = new ClientConnection(clientSocket);
+            ClientConnection client = new ClientConnection(clientSocket, this);
             executors.submit(client);
         }
+    }
+
+    public boolean addClient(ClientConnection client, String username) {
+        if (clientsList.keySet().contains(username)) {
+            return false;
+        }
+        clientsList.put(username, client);
+        return true;
     }
 }
