@@ -1,3 +1,5 @@
+import commands.Command;
+import commands.Executable;
 import utils.Messages;
 
 import java.io.*;
@@ -24,24 +26,34 @@ public class ClientConnection implements Runnable {
 
         try {
             chooseName();
+            send(Messages.AVAILABLE_COMMANDS);
 
-            while (clientSocket.isBound()) {
+            server.broadcast(name + Messages.ENTERED_CHAT);
+
+            while (!clientSocket.isClosed()) {
                 listen();
             }
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     private void listen() throws IOException {
         String message = bReader.readLine();
+
         if(message == null) {
-            server.removeClient(this);
-            clientSocket.close();
+            closeConnection();
             return;
         }
-        server.broadcast(message);
+
+        if(!message.startsWith(Messages.COMMAND_IDENTIFIER)) {
+            server.broadcast(message);
+            return;
+        }
+
+        Executable command = Command.getCommand(message);
+        command.execute(server, this, message);
     }
 
     private void chooseName() throws IOException {
@@ -60,11 +72,19 @@ public class ClientConnection implements Runnable {
             return;
         }
         name = username;
-        server.broadcast(username + Messages.ENTERED_CHAT);
     }
 
     private boolean isValid(String username) {
         return !username.trim().isEmpty();
+    }
+
+    public void closeConnection(){
+        try {
+            server.removeClient(this);
+            clientSocket.close();
+        } catch (IOException e) {
+            e.getMessage();
+        }
     }
 
     public void send(String message) {
