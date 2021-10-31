@@ -1,11 +1,10 @@
+import server.Server;
 import utils.Messages;
-
 import java.io.IOException;
 
-public class Main {
+public class Launcher {
 
     public static void main(String[] args) {
-
         try {
             int port = args.length != 0 ? Integer.parseInt(args[0]) : Messages.DEFAULT_PORT;
 
@@ -19,5 +18,4 @@ public class Main {
             System.out.println("Usage: java -jar TcpChat.jar <port>");
         }
     }
-
 }

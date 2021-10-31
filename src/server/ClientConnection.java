@@ -1,3 +1,5 @@
+package server;
+
 import commands.Command;
 import commands.Executable;
 import utils.Messages;
