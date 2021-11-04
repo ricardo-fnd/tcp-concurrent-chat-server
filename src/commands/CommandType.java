@@ -3,7 +3,7 @@ package commands;
 import utils.Messages;
 
 public enum CommandType {
-    COMMANDS(new Commands()),
+    COMMANDS(new CommandsList()),
     LIST(new ClientsList()),
     WHISPER(new Whisper()),
     QUIT(new Quit()),
