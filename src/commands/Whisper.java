@@ -5,6 +5,8 @@ import server.Server;
 import utils.Date;
 import utils.Messages;
 
+import java.util.logging.Logger;
+
 public class Whisper extends Command {
 
     public Whisper() {
@@ -40,5 +42,6 @@ public class Whisper extends Command {
 
         String date = Date.getDateAndTime();
         receiver.send(date + sender.getName() + Messages.WHISPER + whisper);
+        Logger.getGlobal().info(sender.getName() + " whispered " + receiver.getName());
     }
 }

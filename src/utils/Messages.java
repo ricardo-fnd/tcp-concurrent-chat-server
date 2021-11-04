@@ -9,9 +9,7 @@ public class Messages {
     public static final String DOUBLE_LINE_RETURN = "\r\r\n\n";
 
     // server related
-    public static final String SERVER_INITIALIZED = "Server initialized with port " + DEFAULT_PORT + ONE_LINE_RETURN;
-    public static final String SERVER_FULL = "Server is full. Try again later.\r\n";
-    public static final String WAITING_CLIENT = "Waiting for client." + ONE_LINE_RETURN;
+    public static final String SERVER_INITIALIZED = "Server initialized with port ";
     public static final String CLIENT_CONNECTED = "Client connected from ";
 
     // client related

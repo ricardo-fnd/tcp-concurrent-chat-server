@@ -1,21 +1,24 @@
 import server.Server;
 import utils.Messages;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class Launcher {
 
     public static void main(String[] args) {
+        Server server = null;
+
         try {
             int port = args.length != 0 ? Integer.parseInt(args[0]) : Messages.DEFAULT_PORT;
 
-            Server server = new Server(port);
+            server = new Server(port);
             server.listen();
 
         } catch (IOException ex) {
-            System.out.println("INTERNAL SERVER ERROR");
-            System.out.println(ex.getMessage());
+            server.broadcast("SERVER", "INTERNAL SERVER ERROR.");
+            Logger.getGlobal().severe(ex.getMessage());
         } catch (NumberFormatException ex) {
-            System.out.println("Usage: java -jar TcpChat.jar <port>");
+            Logger.getGlobal().warning(ex.getMessage());
         }
     }
 }

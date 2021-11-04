@@ -6,6 +6,7 @@ import utils.Messages;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class ClientConnection implements Runnable {
 
@@ -18,8 +19,8 @@ public class ClientConnection implements Runnable {
     public ClientConnection(Socket clientSocket, Server server) throws IOException {
         this.server = server;
         this.clientSocket = clientSocket;
-        bReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        pWriter = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+        this.bReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        this.pWriter = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
     }
 
     @Override
@@ -75,6 +76,7 @@ public class ClientConnection implements Runnable {
             return;
         }
         name = username;
+        Logger.getGlobal().info(clientSocket.getInetAddress().getHostAddress() + " is " + name);
     }
 
     private boolean isValid(String username) {
@@ -88,6 +90,7 @@ public class ClientConnection implements Runnable {
 
     public void close() {
         try {
+            Logger.getGlobal().info(name + "(" + clientSocket.getInetAddress().getHostAddress() + ")" + Messages.LEFT_CHAT);
             clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

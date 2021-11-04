@@ -1,6 +1,7 @@
 package server;
 
 import utils.Date;
+import utils.Messages;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -19,6 +21,7 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        Logger.getGlobal().info(Messages.SERVER_INITIALIZED + port);
     }
 
     public void listen() throws IOException {
@@ -27,6 +30,7 @@ public class Server {
 
         while (true) {
             Socket clientSocket = serverSocket.accept();
+            Logger.getGlobal().info(Messages.CLIENT_CONNECTED + clientSocket.getInetAddress().getHostAddress());
 
             ClientConnection client = new ClientConnection(clientSocket, this);
             executors.submit(client);
@@ -46,6 +50,7 @@ public class Server {
             return false;
         }
         clientsList.put(username, client);
+        Logger.getGlobal().info(clientsList.size() + " clients chatting.");
         return true;
     }
 
