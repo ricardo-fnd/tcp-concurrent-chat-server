@@ -1,6 +1,6 @@
 package server;
 
-import commands.Command;
+import commands.CommandType;
 import commands.Executable;
 import utils.Messages;
 
@@ -30,7 +30,7 @@ public class ClientConnection implements Runnable {
             chooseName();
             send(Messages.AVAILABLE_COMMANDS);
 
-            server.broadcast(name + Messages.ENTERED_CHAT);
+            server.broadcast("SERVER", name + Messages.ENTERED_CHAT);
 
             while (!clientSocket.isClosed()) {
                 listen();
@@ -44,17 +44,18 @@ public class ClientConnection implements Runnable {
     private void listen() throws IOException {
         String message = bReader.readLine();
 
-        if(message == null) {
-            closeConnection();
+        if (message == null) {
+            server.closeConnection(this);
+            server.broadcast("SERVER", name + Messages.LEFT_CHAT);
             return;
         }
 
-        if(!message.startsWith(Messages.COMMAND_IDENTIFIER)) {
-            server.broadcast(message);
+        if (!message.startsWith(Messages.COMMAND_IDENTIFIER)) {
+            server.broadcast(name, message);
             return;
         }
 
-        Executable command = Command.getCommand(message);
+        Executable command = CommandType.getCommand(message);
         command.execute(server, this, message);
     }
 
@@ -80,18 +81,17 @@ public class ClientConnection implements Runnable {
         return !username.trim().isEmpty();
     }
 
-    public void closeConnection(){
-        try {
-            server.removeClient(this);
-            clientSocket.close();
-        } catch (IOException e) {
-            e.getMessage();
-        }
+    public void send(String message) {
+        pWriter.println(message);
+        pWriter.flush();
     }
 
-    public void send(String message) {
-        pWriter.print(message);
-        pWriter.flush();
+    public void close() {
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getName() {

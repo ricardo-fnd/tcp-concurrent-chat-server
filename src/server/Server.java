@@ -31,7 +31,11 @@ public class Server {
         }
     }
 
-    public Set<String> getAllClients(){
+    public ClientConnection getClientByUsername(String username) {
+        return clientsList.get(username);
+    }
+
+    public Set<String> getAllClients() {
         return clientsList.keySet();
     }
 
@@ -49,11 +53,16 @@ public class Server {
         }
     }
 
-    public void broadcast(String message) {
+    public void broadcast(String sender, String message) {
         synchronized (clientsList) {
             for (ClientConnection client : clientsList.values()) {
-                client.send(message);
+                client.send(sender + ": " + message);
             }
         }
+    }
+
+    public void closeConnection(ClientConnection client) {
+        removeClient(client);
+        client.close();
     }
 }
