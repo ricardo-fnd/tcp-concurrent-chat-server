@@ -1,5 +1,7 @@
 package server;
 
+import utils.Date;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -54,9 +56,11 @@ public class Server {
     }
 
     public void broadcast(String sender, String message) {
+        String date = Date.getDateAndTime();
+
         synchronized (clientsList) {
             for (ClientConnection client : clientsList.values()) {
-                client.send(sender + ": " + message);
+                client.send(date + sender + ": " + message);
             }
         }
     }

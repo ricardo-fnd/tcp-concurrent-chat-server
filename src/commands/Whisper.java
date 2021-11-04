@@ -38,6 +38,7 @@ public class Whisper extends Command {
             whisper.append(messageSplit[i]).append(" ");
         }
 
-        receiver.send(sender.getName() + Messages.WHISPER + whisper);
+        String date = Date.getDateAndTime();
+        receiver.send(date + sender.getName() + Messages.WHISPER + whisper);
     }
 }
