@@ -38,7 +38,9 @@ public class ClientConnection implements Runnable {
             }
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+            server.closeConnection(this);
+            server.broadcast("SERVER", name + Messages.LEFT_CHAT);
+            Logger.getGlobal().warning(name + "(" + clientSocket.getInetAddress().getHostAddress() + ")" + Messages.LEFT_UNEXPECTEDLY);
         }
     }
 

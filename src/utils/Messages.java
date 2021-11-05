@@ -20,6 +20,7 @@ public class Messages {
     public static final String LEFT_CHAT = " has left the chat.";
     public static final String CHOOSE_VALID_USERNAME = "You must choose a valid username.";
     public static final String USERNAME_NOT_FOUND = "SERVER: Username not found.";
+    public static final String LEFT_UNEXPECTEDLY = " left unexpectedly.";
 
     // commands related
     public static final String COMMAND_IDENTIFIER = "/";
