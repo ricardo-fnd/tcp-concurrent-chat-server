@@ -2,6 +2,7 @@ package server;
 
 import commands.CommandType;
 import commands.Executable;
+import utils.Date;
 import utils.Messages;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public class ClientConnection implements Runnable {
     private BufferedReader bReader;
     private PrintWriter pWriter;
     private String name;
+    private ClientConnection lastContact;
 
     public ClientConnection(Socket clientSocket, Server server) throws IOException {
         this.server = server;
@@ -97,7 +99,24 @@ public class ClientConnection implements Runnable {
         }
     }
 
+    public void setLastContact(ClientConnection client) {
+        this.lastContact = client;
+    }
+
+    public ClientConnection getLastContact() {
+        return lastContact;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void whisper(ClientConnection receiver, String message) {
+        String date = Date.getDateAndTime();
+        receiver.send(date + name + Messages.WHISPER + message);
+
+        receiver.setLastContact(this);
+        this.setLastContact(receiver);
+        Logger.getGlobal().info(name + " whispered " + receiver.getName());
     }
 }

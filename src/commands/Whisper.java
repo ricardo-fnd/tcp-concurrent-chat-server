@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class Whisper extends Command {
 
     public Whisper() {
-        super(new String[]{"/w", "/whisper <username> <message>"});
+        super(new String[]{"/w", "/whisper"});
     }
 
     @Override
@@ -40,8 +40,6 @@ public class Whisper extends Command {
             whisper.append(messageSplit[i]).append(" ");
         }
 
-        String date = Date.getDateAndTime();
-        receiver.send(date + sender.getName() + Messages.WHISPER + whisper);
-        Logger.getGlobal().info(sender.getName() + " whispered " + receiver.getName());
+        client.whisper(receiver, whisper.toString());
     }
 }

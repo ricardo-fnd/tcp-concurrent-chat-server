@@ -6,6 +6,7 @@ public enum CommandType {
     COMMANDS(new CommandsList()),
     LIST(new ClientsList()),
     WHISPER(new Whisper()),
+    ANSWER(new ReplyWhisper()),
     QUIT(new Quit()),
     INVALID(new Invalid());
 
