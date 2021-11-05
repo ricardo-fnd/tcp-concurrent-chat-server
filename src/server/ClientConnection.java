@@ -4,6 +4,7 @@ import commands.CommandType;
 import commands.Executable;
 import utils.Date;
 import utils.Messages;
+import validations.Validator;
 
 import java.io.*;
 import java.net.Socket;
@@ -45,11 +46,9 @@ public class ClientConnection implements Runnable {
     }
 
     private void listen() throws IOException {
-        String message = bReader.readLine();
+        String message = bReader.readLine().trim();
 
-        if (message == null) {
-            server.closeConnection(this);
-            server.broadcast("SERVER", name + Messages.LEFT_CHAT);
+        if (!isValid(message)) {
             return;
         }
 
@@ -67,7 +66,7 @@ public class ClientConnection implements Runnable {
         String username = bReader.readLine();
 
         if (!isValid(username)) {
-            send(Messages.CHOOSE_VALID_NAME);
+            send(Messages.CHOOSE_VALID_USERNAME);
             chooseName();
             return;
         }
@@ -81,13 +80,22 @@ public class ClientConnection implements Runnable {
         Logger.getGlobal().info(clientSocket.getInetAddress().getHostAddress() + " is " + name);
     }
 
-    private boolean isValid(String username) {
-        return !username.trim().isEmpty();
+    private boolean isValid(String message) {
+        return Validator.isValid(server, this, message);
     }
 
     public void send(String message) {
         pWriter.println(message);
         pWriter.flush();
+    }
+
+    public void whisper(ClientConnection receiver, String message) {
+        String date = Date.getDateAndTime();
+        receiver.send(date + name + Messages.WHISPER + message);
+
+        receiver.setLastContact(this);
+        this.setLastContact(receiver);
+        Logger.getGlobal().info(name + " whispered " + receiver.getName());
     }
 
     public void close() {
@@ -109,14 +117,5 @@ public class ClientConnection implements Runnable {
 
     public String getName() {
         return name;
-    }
-
-    public void whisper(ClientConnection receiver, String message) {
-        String date = Date.getDateAndTime();
-        receiver.send(date + name + Messages.WHISPER + message);
-
-        receiver.setLastContact(this);
-        this.setLastContact(receiver);
-        Logger.getGlobal().info(name + " whispered " + receiver.getName());
     }
 }
