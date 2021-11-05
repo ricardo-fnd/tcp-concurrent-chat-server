@@ -2,7 +2,6 @@ package server;
 
 import utils.Date;
 import utils.Messages;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,13 +20,13 @@ public class Server {
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
+        clientsList = new ConcurrentHashMap<>();
+        executors = Executors.newCachedThreadPool();
+
         Logger.getGlobal().info(Messages.SERVER_INITIALIZED + port);
     }
 
     public void listen() throws IOException {
-        clientsList = new ConcurrentHashMap<>();
-        executors = Executors.newCachedThreadPool();
-
         while (true) {
             Socket clientSocket = serverSocket.accept();
             Logger.getGlobal().info(Messages.CLIENT_CONNECTED + clientSocket.getInetAddress().getHostAddress());
@@ -46,12 +45,14 @@ public class Server {
     }
 
     public boolean addClient(ClientConnection client, String username) {
-        if (clientsList.keySet().contains(username)) {
-            return false;
+        synchronized (clientsList) {
+            if (clientsList.keySet().contains(username)) {
+                return false;
+            }
+            clientsList.put(username, client);
+            Logger.getGlobal().info(clientsList.size() + " clients chatting.");
+            return true;
         }
-        clientsList.put(username, client);
-        Logger.getGlobal().info(clientsList.size() + " clients chatting.");
-        return true;
     }
 
     public void removeClient(ClientConnection client) {

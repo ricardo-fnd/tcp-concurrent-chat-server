@@ -2,6 +2,7 @@ package commands;
 
 import server.ClientConnection;
 import server.Server;
+import utils.Messages;
 
 public class ReplyWhisper extends Command{
 
@@ -12,6 +13,11 @@ public class ReplyWhisper extends Command{
     @Override
     public void execute(Server server, ClientConnection client, String message) {
         ClientConnection lastContact = client.getLastContact();
+
+        if (lastContact == null) {
+            client.send(Messages.REPLY_ERROR);
+            return;
+        }
 
         String[] messageSplit = message.split(" ");
 

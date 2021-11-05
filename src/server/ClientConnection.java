@@ -5,7 +5,6 @@ import commands.Executable;
 import utils.Date;
 import utils.Messages;
 import validations.Validator;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -29,13 +28,11 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
         send(Messages.WELCOME);
-
         try {
             chooseName();
             send(Messages.AVAILABLE_COMMANDS);
 
             server.broadcast("SERVER", name + Messages.ENTERED_CHAT);
-
             while (!clientSocket.isClosed()) {
                 listen();
             }
